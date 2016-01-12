@@ -20,32 +20,45 @@ app.get("/todos", function (req, res) {
 
 //GET /todos/:id
 app.get("/todos/:id", function (req, res) {
-        var todoId = parseInt(req.params.id);
-        var matchedTodo = _.findWhere(todos, {id: todoId});
-        
-        if(matchedTodo){
-            res.json(matchedTodo);            
-        }  
-        else{
-            res.status(404).send();
-        }               
+    var todoId = parseInt(req.params.id); // το κάνουμε γιατί είναι string κανονικά
+    var matchedTodo = _.findWhere(todos, {id: todoId});
+
+    if (matchedTodo) {
+        res.json(matchedTodo);
+    } else {
+        res.status(404).send();
+    }
 });
 
 //POST /todos
-app.post("/todos", function(req, res){
-    var body = _.pick(req.body, "description", "completed");            
-    
-    if(!_.isBoolean(body.completed) || !_.isString(body.description) || body.description.trim().length === 0){
+app.post("/todos", function (req, res) {
+    var body = _.pick(req.body, "description", "completed");
+
+    if (!_.isBoolean(body.completed) || !_.isString(body.description) || body.description.trim().length === 0) {
         return res.status(400).send(); // Ο κωδικός για το 400 είναι οτι δεν εστάλησαν δεδομένα ή σωστά δεδομένα
-    }   
-    
+    }
+
     body.description = body.description.trim();
-    
-    body.id = toDoNextId++; 
+
+    body.id = toDoNextId++;
     todos.push(body);
-    
+
     res.json(body);
 });
+
+// DELETE /todos/:id
+app.delete("/todos/:id", function (req, res) {
+    var todoId = parseInt(req.params.id);
+    var matchedTodo = _.findWhere(todos, {id: todoId});
+
+    if (matchedTodo) {
+        todos = _.without(todos, matchedTodo);        
+        res.json(matchedTodo);
+    } else {
+        res.status(404).json({"error" : "No todo found"});        
+    }
+
+})
 
 app.listen(PORT, function () {
     console.log("Express listening on port " + PORT + "!");
