@@ -12,7 +12,8 @@
   "contributors": [],
   "dependencies": {
     "body-parser": "1.14.2",
-    "express": "4.13.3"
+    "express": "4.13.3",
+    "underscore": "^1.8.3"
   },
   "scripts": {
     "start": "node server.js"
